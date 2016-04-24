@@ -22,10 +22,12 @@ public class SimpleBatchTopology {
     private static Map conf;
 
     public static TopologyBuilder SetBuilder() {
+        // 通过BatchTopologyBuilder来关联是spout和bolt，但是源码中这个topologyName并没有用到
         BatchTopologyBuilder topologyBuilder = new BatchTopologyBuilder(topologyName);
 
         int spoutParallel = JStormUtils.parseInt(conf.get("topology.spout.parallel"), 1);
 
+        // setSpout还是调用的setBolt, spout是一种特殊的bolt
         BoltDeclarer boltDeclarer = topologyBuilder.setSpout("Spout",
                 new SimpleSpout(), spoutParallel);
 
@@ -41,6 +43,7 @@ public class SimpleBatchTopology {
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology(topologyName, conf, builder.createTopology());
 
+        System.out.println("build test.");
         Thread.sleep(60000);
 
         cluster.shutdown();

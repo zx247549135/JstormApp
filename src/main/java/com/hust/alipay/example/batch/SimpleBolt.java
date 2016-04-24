@@ -32,7 +32,6 @@ public class SimpleBolt implements IBasicBolt, ICommitter {
 
     private TimeCacheMap<BatchId, AtomicLong> counters;
 
-    @Override
     public void prepare(Map stormConf, TopologyContext context) {
         this.conf = stormConf;
 
@@ -43,8 +42,8 @@ public class SimpleBolt implements IBasicBolt, ICommitter {
         LOG.info("Successfully do prepare");
     }
 
-    @Override
     public void execute(Tuple input, BasicOutputCollector collector) {
+        System.out.println("Test: This bolt is executing!");
         BatchId id = (BatchId) input.getValue(0);
         Long value = input.getLong(1);
 
@@ -56,24 +55,20 @@ public class SimpleBolt implements IBasicBolt, ICommitter {
         counter.addAndGet(value);
     }
 
-    @Override
     public void cleanup() {
         LOG.info("Successfully do cleanup");
     }
 
-    @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
         declarer.declare(new Fields("BatchId", "counters"));
     }
 
-    @Override
     public Map<String, Object> getComponentConfiguration() {
         return null;
     }
 
     private BatchId currentId;
 
-    @Override
     public byte[] commit(BatchId id) throws FailedException {
         LOG.info("Receive BatchId " + id);
         if (currentId == null) {
@@ -94,8 +89,6 @@ public class SimpleBolt implements IBasicBolt, ICommitter {
         return Utils.serialize(id);
     }
 
-
-    @Override
     public void revert(BatchId id, byte[] commitResult) {
         LOG.info("Receive BatchId " + id);
 

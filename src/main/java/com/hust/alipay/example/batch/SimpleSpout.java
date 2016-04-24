@@ -23,14 +23,13 @@ public class SimpleSpout implements IBatchSpout {
     private Random rand;
     private int batchSize = 100;
 
-    @Override
     public void prepare(Map stormConf, TopologyContext context) {
         rand = new Random();
         rand.setSeed(System.currentTimeMillis());
     }
 
-    @Override
     public void execute(Tuple input, BasicOutputCollector collector) {
+        System.out.println("Test: This spout is executing!");
         BatchId batchId = (BatchId) input.getValue(0);
 
         for (int i = 0; i < batchSize; i++) {
@@ -39,27 +38,22 @@ public class SimpleSpout implements IBatchSpout {
         }
     }
 
-    @Override
     public void cleanup() {
     }
 
-    @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
         declarer.declare(new Fields("BatchId", "Value"));
     }
 
-    @Override
     public Map<String, Object> getComponentConfiguration() {
         return null;
     }
 
-    @Override
     public byte[] commit(BatchId id) throws FailedException {
         LOG.info("Receive BatchId " + id);
         return null;
     }
 
-    @Override
     public void revert(BatchId id, byte[] commitResult) {
         LOG.info("Receive BatchId " + id);
     }
