@@ -40,10 +40,15 @@ public class SimpleBatchTopology {
     public static void SetLocalTopology() throws Exception {
         TopologyBuilder builder = SetBuilder();
 
+        // LocalCluster 的流程是：
+        // 1，处理参数conf；
+        // 2，分配Nimbus；
+        // 3，Nimbus（ServiceHandle)提交作业；
+        // 4，注册启动、分配流水线的事件Event；
+        // 5，通过StartEvent启动作业。
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology(topologyName, conf, builder.createTopology());
 
-        System.out.println("build test.");
         Thread.sleep(60000);
 
         cluster.shutdown();
